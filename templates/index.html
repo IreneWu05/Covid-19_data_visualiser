@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <meta charset="utf-8">
+    <title>Covid-19 Data Visualiser</title>
+    <meta name="description" content="This is a covid-19 data visualiser" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='style.css') }}" >
+
+     <!--import google font-->
+     <link rel="preconnect" href="https://fonts.googleapis.com"> 
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700;900&family=Rubik+Dirt&display=swap" rel="stylesheet"></head>
+     
+    <!--import echarts-->
+    <script src="{{ url_for('static', filename='graph1.js') }}" ></script> 
+    <script src="{{ url_for('static', filename='echarts.min.js') }}" ></script>
+    <script src="{{ url_for('static', filename='jquery-3.5.1.min.js') }}" ></script> 
+    <!--http://127.0.0.1:8000-->
+  </head>
+
+  {% block content %}
+  <body>
+    <header>
+        <!--<h2>Covid-19 Data Visualiser</h2>-->
+    </header>
+
+    <section class="b1">
+        <!--left section_map-->
+        <div class="column">
+          <div class="map" id = "map">
+           
+           
+          
+    
+            </div>
+        </div>
+
+        <!--right section_statits-->
+        <div class="column">
+
+
+          
+            <div class="basic">
+              <h3>New Confirmed COVID-19 Cases</h3>
+
+                <div class="inner-section">
+                  <!--data bar-->
+                <div class="statits">
+                    <ul>
+                      {% for Values in Value %}
+                      <tr>
+                        <td><li class="li-h">{{Values[1]}}</li></td>
+                      </tr>
+                  
+                    
+                      <tr>
+                        <td><li class="li-h">{{Values[0]}}</li></td>
+                      </tr>
+                    
+                      <tr>
+                      <td> <li class="li-h-red">{{ Values[2]}}</li></td>
+                    </tr>
+                  
+                 
+                    <tr>
+                      <td><li class="li-h-green">{{Values[3]}}</li></td>
+                    </tr>
+                  {% endfor %}
+                    </ul>
+                   
+                </div>
+           
+                <div class="texts">
+                    <ul>
+                        <li>Total Active Cases</li>
+                        <li>Total Cases Confirmed</li>
+                        <li>Deaths</li>
+                        <li>Recovered</li>
+                        </ul>
+                </div>
+            </div><!--end of inner section-->
+            </div><!--end of basic-->
+
+            <div class="graph1">          
+            </div><!--end of graph1-->
+
+            <div class="graph2">
+            </div>
+        </div>
+      </div>
+        
+    </section>
+
+   <!--import echart graph-->           
+   <script type="text/javascript">
+
+/*header animation affect*/
+var myChart3 = echarts.init(document.querySelector("header"));
+
+var option3 = {
+  graphic: {
+    elements: [
+      {
+        type: 'text',
+        left: 'center',
+        top: '30',
+        style: {
+          text: 'Covid-19 Data Visualiser',
+          fontSize: 20,
+          fontWeight: 'bold',
+          lineDash: [0, 200],
+          lineDashOffset: 0,
+          fill: 'transparent',
+          stroke: '#fff',
+          lineWidth: 1
+        },
+        keyframeAnimation: {
+          duration: 5000,
+          loop: true,
+          keyframes: [
+            {
+              percent: 0.7,/*display speed*/
+              style: {
+                fill: 'transparent',
+                lineDashOffset: 200,
+                lineDash: [200, 0]
+              }
+            },
+            {
+              // Stop for a while.
+              percent: 0.2,
+              style: {
+                fill: 'transparent'
+              }
+            },
+            {
+              percent: 1,
+              style: {
+                fill: 'white'
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+};
+
+myChart3.setOption(option3);
+/*end of header animation affect*/
+
+
+
+ /* graph 1, bar graph*/
+    var myChart1 = echarts.init(document.querySelector(".graph1"));
+       var option1 = {
+
+/*position, fill the container*/ 
+   grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true
+  },
+         
+   title: {
+     text: 'Monthly Recovered Covid-19 Cases (2022)',
+     left: 'center',
+     top: 10,
+     textStyle: {
+       color: 'white',
+       fontWeight: "300",
+       fontFamily: 'Roboto',
+       fontSize: 14, 
+     },
+   },
+
+   /*hover trigger shadow effect*/
+   tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow'
+    }
+  },
+
+   legend: {
+     data: ['data']
+   },
+
+   xAxis: {
+     data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+     axisLabel: {
+       color: "#ccc"/*bottom lable*/
+     },
+     axisLine: {
+      lineStyle: {
+        color: "grey"/*bottom line*/
+      },
+   },
+
+/*axis settings*/
+   },
+   yAxis: {
+     axisLabel: {
+       color: 'white',
+     },
+
+     axisLine: {
+      lineStyle: {
+        color: "#ccc"
+      },
+   },
+   splitLine: {
+    lineStyle:{
+      color:'#061324'
+    }
+   }
+  },
+
+/*////////////////////*/
+/*main*/  
+   series: [
+     {
+       name: 'Recovered cases',
+       data: [ '{{graph1[0]}}', '{{graph1[1]}}', '{{graph1[2]}}','{{graph1[3]}}', '{{graph1[4]}}', '{{graph1[5]}}', '{{graph1[6]}}','{{graph1[7]}}', '{{graph1[8]}}', '{{graph1[9]}}'],
+       type: 'bar', 
+       barWidth: 15,     
+       itemStyle: {
+       normal: {
+       barBorderRadius: [8,8,0,0],
+       color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{ 
+        /*set the bar color to gradient, x0, y0, x2, y2*/
+             offset: 0,
+             color: 'rgba(237, 194, 26)'
+         }, {
+             offset: 0.9,
+             color: 'rgba(233, 140, 19)'
+         }, ], false)      
+     }
+    }
+     }
+   ]
+ };
+ myChart1.setOption(option1);
+
+ /*resize while the broswer changes*/
+ window.addEventListener('resize', function() {
+   myChart.resize();
+ });
+ /* end of graph 1*/
+
+
+/* graph 2*/
+var myChart2 = echarts.init(document.querySelector(".graph2"));
+
+
+var option2 = {
+  color: ['rgba(237, 194, 26)', '#00DDFF', 'rgba(233, 140, 19)'], /*color of the panel*/
+  title: {
+    text: 'Annualy Active Covid-19 Aases',
+     left: 'center',
+     top: 10,
+     textStyle: {
+       color: 'white',
+       fontWeight: "300",
+       fontFamily: 'Roboto',
+       fontSize: 14, 
+     }
+  },
+
+  /*hover affect*/
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross',
+      label: {
+        backgroundColor: '#ffa750'/*lable color*/
+      }
+    }
+  },
+
+/*view data tool*/
+  toolbox: {
+           orient: 'vertical',
+           top: '2%',
+           right: '3%',
+           feature: {
+            dataView: {
+                show: true,
+                readOnly: true,
+                title: 'View Data',
+                lang: ["Annualy active Covid-19 cases", "Close"],/*title & button*/
+                buttonTextColor: '#fff',
+                buttonColor: '#ffa750',
+
+                optionToContent: function (opt) {
+                    var axisData = opt.xAxis[0].data; /*data from the x axis*/
+                    var series = opt.series; 
+                    var tdHeads = '<td  style="padding:10px 10px">Month</td>'; /*header row*/
+
+                    series.forEach(function (item) {
+                        tdHeads += '<td style="padding: 10px 10px">'+item.name+'</td>';
+                    });
+                    /*table styleing*/
+                    var table = '<table border="1" style="width: 100%; margin: 20px 20px 20px 20px; border-collapse:collapse;font-size:14px;text-align:center"><tbody><tr>'+tdHeads+'</tr>';
+                    var tdBodys = '';
+                    for (var i = 0, l = axisData.length; i < l; i++) {
+                        for (var j = 0; j < series.length; j++) {
+                            if(typeof(series[j].data[i]) == 'object'){
+                                tdBodys += '<td>'+series[j].data[i].value+'</td>';
+                            }else{
+                                tdBodys += '<td>'+ series[j].data[i]+'</td>';
+                            }
+                        }
+                        table += '<tr><td style="padding: 0 10px">'+axisData[i]+'</td>'+ tdBodys +'</tr>';
+                        tdBodys = '';
+                    }
+                    table += '</tbody></table>';
+                    return table;
+                }
+            },
+
+           }
+         },
+
+  /*panel text*/
+  legend: {
+    data: ['2020', '2021', '2022'],
+    top: '90%',
+    left: 'center',
+  },
+
+  
+/*position*/
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '13%',
+    top: '18%',
+    containLabel: true
+  },
+
+/*axis settings*/
+  xAxis: [
+    {
+      type: 'category',
+      axisTick: {
+        alignWithLabel: true
+      },
+      boundaryGap: false,
+      data: ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct','Nov','Dec'],
+      axisLabel: {
+       color: '#ccc',
+     },
+    }
+  ],
+
+  yAxis: [
+    
+    {
+    splitLine: {
+    lineStyle:{
+      color:'#061324'
+    }
+   },
+   axisLabel: {
+       color: 'white',
+     },
+      type: 'value'
+    },
+  ],
+
+
+/*////////////////////*/
+/*section 1, 2020 data*/
+  series: [
+    {
+      name: '2020',
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 2,
+      },
+      showSymbol: true,
+      areaStyle: {
+      opacity: .3,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [ /*gradient*/
+          {
+            offset: 0,
+            color: 'rgba(237, 194, 26)'
+          },
+          {
+            offset: 1,
+            color: 'rgba(233, 140, 19)'
+          }
+        ])
+        
+      },
+
+      emphasis: {
+        focus: 'series'
+      },
+      data: [ '{{graph2[0]}}', '{{graph2[1]}}','{{graph2[2]}}','{{graph2[3]}}','{{graph2[4]}}','{{graph2[5]}}',  '{{graph2[6]}}', '{{graph2[7]}}','{{graph2[8]}}','{{graph2[9]}}','{{graph2[10]}}','{{graph2[11]}}']
+      
+    },
+
+/*////////////////////*/
+/*section 2, 2021 data*/
+    {
+      name: '2021',
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 2
+      },
+      showSymbol: true,
+      areaStyle: {
+        opacity: .3,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [ /*gradient*/
+          {
+            offset: 0,
+            color: '#14c8d4'
+          },
+          {
+            offset: 1,
+            color: '#43eec6'
+          }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: ['{{graph2[12]}}', '{{graph2[13]}}','{{graph2[14]}}','{{graph2[15]}}','{{graph2[16]}}','{{graph2[17]}}',  '{{graph2[18]}}', '{{graph2[19]}}','{{graph2[20]}}','{{graph2[21]}}','{{graph2[22]}}','{{graph2[23]}}']
+    },
+
+/*////////////////////*/
+/*section 3, 2022 data*/
+    {
+      name: '2022',
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 2
+      },
+      showSymbol: true,
+      areaStyle: {
+        opacity: .3,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [ /*gradient*/
+          {
+            offset: 0,
+            color: 'orangered'
+          },
+          {
+            offset: 1,
+            color: 'rgba(233, 140, 19)'
+          }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: ['{{graph2[24]}}', '{{graph2[25]}}','{{graph2[26]}}','{{graph2[27]}}','{{graph2[28]}}','{{graph2[29]}}',  '{{graph2[30]}}', '{{graph2[31]}}','{{graph2[32]}}']
+    },
+  ]
+  
+};
+
+ myChart2.setOption(option2);
+/*  end of graph 2*/
+
+
+
+/* map graph*/
+ var myChart = echarts.init(document.getElementById('map'));
+
+   myChart.showLoading();
+   $.get('/static/nz_region.json', function (geoJson) {
+     myChart.hideLoading();
+     echarts.registerMap('NZ', geoJson);
+     myChart.setOption(
+       (option = {
+         title: {
+           text: 'New Zealand Active Cases in Cities',
+           subtext: 'Data from StatsNZ ↗',
+           left: 'center',
+           top: 10,
+           textStyle: {
+       color: 'white',
+       fontWeight: "300",
+       fontFamily: 'Roboto',
+       fontSize: 14, 
+     },
+           sublink:
+             'https://www.stats.govt.nz/experimental/covid-19-data-portal/'
+         },
+
+
+         tooltip: {
+           trigger: 'item',
+           type: 'shadow',/*add a shadow to the display box*/
+           formatter: '{b}<br/>{c} Active cases'
+           /*hover lable {a} series name, {b} stats name*/
+         },
+
+      /*data visualise panel*/
+         visualMap: {
+          orient: 'vertical',
+          right: '3%',
+          bottom:'1%',
+           min: 120,
+           max: 6000,
+           text: ['High', 'Low'],
+           textStyle:{
+          fontSize: 12,
+          color: 'white',
+           },
+           realtime: false,
+           calculable: true,
+           inRange: {
+             color: ['#14c8d4', '#edc21a', 'orangered']/*bar color*/
+           }
+         },
+
+       
+
+  /*main graph*/
+   series: [
+           {
+             name: 'New Zealand Active Cases in Cities',
+             type: 'map',
+             map: 'NZ',
+
+        itemStyle: {
+        normal: {
+          areaColor: '#edc21d',/*city color*/
+          borderColor: 'white',
+          borderWidth: 1
+        },
+      },
+        emphasis:{
+        show: true,
+        areaColor: 'orange',
+
+        /*hovering shadow effect on map*/
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        },
+       
+        /*hovering text*/
+        label: {
+        show: true,
+               textStyle: {
+                color: 'white', /*text color while hovering*/
+                fontSize: 14,/*let the text bigger while hovering*/
+                textShadowBlur: 5,/*text shadow*/
+                textShadowOffsetX: 0,
+                textShadowColor: 'rgba(0, 0, 0, 0.5)'
+               }
+             }
+    },
+
+    /*normal text on map*/
+    label: {
+      normal: {
+        show: true,
+        textStyle:{
+          fontSize: 12,
+          color: 'white',
+          textShadowBlur: 5,
+          textShadowOffsetX: 0,
+          textShadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    },
+
+             data: [
+               { name: 'Auckland', value:'{{active[0]}}'},
+               { name: 'Bays of Plenty', value: '{{active[1]}}'},
+               { name: 'Canterbury', value: '{{active[2]}}'},
+               { name: 'Wellington', value: '{{active[3]}}'},
+               { name: 'Hawkes Bay', value:'{{active[4]}}'},
+               { name: 'Nelson', value: '{{active[5]}}'},
+               { name: 'Marlborough', value: '{{active[5]}}'},
+               { name: 'Northland', value: '{{active[6]}}' },
+               { name: 'Taranaki', value: '{{active[7]}}' },
+               { name: 'Waikato', value: '{{active[8]}}'},
+               { name: 'West Coast', value: '{{active[9]}}' },
+               { name: 'Manawatu-Wanganui', value: '{{active[10]}}'},
+               { name: 'Gisborne', value: '{{active[11]}}'},
+               { name: 'Tasman', value: '{{active[12]}}'},
+               { name: 'Southland', value: '{{active[13]}}'},
+               { name: 'Otago', value: '{{active[14]}}'}     
+             ],
+           }
+         ]
+
+         
+       })
+     );
+   });
+/* end of map graph*/
+
+ </script>
+
+  </body>
+
+</html>
+
+
+{% endblock %}
